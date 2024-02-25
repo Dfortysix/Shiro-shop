@@ -14,7 +14,7 @@ RUN pip install -r requirements.txt
 COPY . .
 
 # Chạy lệnh migrate để tạo cơ sở dữ liệu SQLite3 và thực hiện các cập nhật
-RUN cd ecom
+WORKDIR /app/ecom
 RUN python manage.py migrate
 
 # Expose cổng 8000 (hoặc bất kỳ cổng nào bạn đang sử dụng cho dự án Django)
