@@ -1,7 +1,7 @@
 def img
 pipeline {
 	environment {
-    	registry = "dfortysix/shiroshop-cicdcicd" //To push an image to Docker Hub, you must first name your local image using your Docker Hub username and the repository name that you created through Docker Hub on the web.
+    	registry = "dfortysix/shop_cicd"
     	registryCredential = 'Dockerhub-xacthuc'
     	dockerImage = ''
 	}
@@ -37,7 +37,7 @@ pipeline {
     	stage('Test - Run Docker Container on Jenkins node') {
        	steps {
 
-            	sh label: '', script: "docker run -d --name ${JOB_NAME} -p 5000:8000 ${img}"
+            	sh label: '', script: "docker run -d --name ${JOB_NAME} -p 7999:8000 ${img}"
       	}
     	}
 
@@ -58,8 +58,8 @@ pipeline {
                     def stopcontainer = "docker stop ${JOB_NAME}"
                     def delcontName = "docker rm ${JOB_NAME}"
                     def delimages = 'docker image prune -a --force'
-                    def drun = "docker run -d --name ${JOB_NAME} -p 5000:8000 ${img}"
-                    def add_pub_ss = "54.179.156.29"
+                    def drun = "docker run -d --name ${JOB_NAME} -p 7999:8000 ${img}"
+                    def add_pub_ss = "13.229.226.52"
                     println "${drun}"
                     sshagent(['staging-key']) {
                         sh returnStatus: true, script: "ssh -o StrictHostKeyChecking=no ubuntu@${add_pub_ss} ${stopcontainer} "
