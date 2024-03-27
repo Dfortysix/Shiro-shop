@@ -58,7 +58,7 @@ pipeline {
                     def stopcontainer = "docker stop ${JOB_NAME}"
                     def delcontName = "docker rm ${JOB_NAME}"
                     def delimages = 'docker image prune -a --force'
-                    def drun = "docker run -d --name ${JOB_NAME} -p 7999:8000 ${img}"
+                    def drun = "docker run -d --name ${JOB_NAME} -p 80:8000 ${img}"
                     def add_pub_ss = "13.229.226.52"
                     println "${drun}"
                     sshagent(['staging-key']) {
