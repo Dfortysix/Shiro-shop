@@ -146,3 +146,4 @@ EMAIL_HOST_USER="djangoemail46@gmail.com"
 EMAIL_HOST_PASSWORD="qnyw edeh fuar ygnz"
 EMAIL_PORT=587
 
+APPEND_SLASH = False

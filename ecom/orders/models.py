@@ -26,7 +26,6 @@ class Order(models.Model):
     order_total = models.FloatField()
     tax = models.FloatField()
     status = models.CharField(max_length=10, choices=STATUS, default='New')
-    ip = models.CharField(blank=True, max_length=20)
     is_ordered = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -38,7 +37,7 @@ class Order(models.Model):
         return "{0} {1}".format(self.address_line_1, self.address_line_2)
 
     def __str__(self):
-        return self.first_name
+        return self.order_number
 
 
 class OrderProduct(models.Model):
