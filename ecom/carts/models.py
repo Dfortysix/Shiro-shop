@@ -25,4 +25,3 @@ class CartItem(models.Model):
 
     def __unicode__(self):
         return self.product
-

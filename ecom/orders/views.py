@@ -1,3 +1,5 @@
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from carts.models import CartItem,Cart
@@ -18,17 +20,8 @@ def _cart_id(request):
         cart_id = request.session.create()
     return cart_id
 
-def sendEmail(request, order):
-    mail_subject = 'Thank you for your order!'
-    message = render_to_string('orders/order_recieved_email.html', {
-        'user': request.user,
-        'order': order
-    })
-    to_email = request.user.email
-    send_email = EmailMessage(mail_subject, message, to=[to_email])
-    send_email.send()
 
-
+@login_required
 def place_order(request,total=0, quantity=0, cart_items=None):
     try:
         if request.user.is_authenticated:
@@ -52,7 +45,7 @@ def place_order(request,total=0, quantity=0, cart_items=None):
     }
     return render(request,'orders/checkout.html',context=context)
 
-
+@login_required
 def order_complete(request):
     if request.method == 'POST':
         # Lấy dữ liệu từ form
@@ -72,11 +65,12 @@ def order_complete(request):
         user = request.user
 
         today = datetime.datetime.today()
-        random_number = random.randint(100000, 999999)
-        order_number = f"ORD-{today.year}{today.month}{today.day}{today.minute}{today.second}-{user.id}-{_cart_id(request)}"
+        order_number = f"ORD{today.year}{today.month}{today.day}{user.id}{_cart_id(request)}{order_total}"
         # Tạo đơn hàng mới
         is_exists_order = Order.objects.filter(order_number=order_number).exists()
-        if is_exists_order == False:
+        if is_exists_order:
+            messages.error(request=request, message="Đơn hàng đã tồn tại")
+        else:
             order = Order.objects.create(
                 user=user,
                 order_number = order_number,
@@ -94,10 +88,6 @@ def order_complete(request):
                 tax=tax,
                 is_ordered=True
             )
-        else:
-            order = {}
-
-
 
         # Lưu đơn hàng
             order.save()
@@ -106,6 +96,7 @@ def order_complete(request):
         try:
             if request.user.is_authenticated:
                 cart_items = CartItem.objects.filter(user=request.user, is_active=True)
+                #print(cart_items)
             else:
                 cart = Cart.objects.get(cart_id=_cart_id(request=request))
                 cart_items = CartItem.objects.filter(cart=cart, is_active=True)
@@ -116,15 +107,15 @@ def order_complete(request):
             product_name = cart_item.product.product_name
             products_list.append(product_name)
         products = Product.objects.filter(product_name__in=products_list)
-        print(products)
         for product in products:
             cart_items = CartItem.objects.filter(user=user,product=product)
-            print(f"cartsitem : {cart_items}")
+            #print(f"cartsitem : {cart_items}")
             variations = [list(item.variations.all()) for item in cart_items]
-            print(f"variation: {variations}")
+            #print(f"variation: {variations}")
             count = 0
             for variation in variations:
-                print(variation)
+                #print(variation)
+                product_variations = []
                 for var in variation:
                     variation_category = var.variation_category
                     variation_value = var.variation_value
@@ -132,7 +123,9 @@ def order_complete(request):
                     variation_object = Variation.objects.get(product=product,
                                                              variation_category__iexact=variation_category,
                                                              variation_value__iexact=variation_value)
-                    order_product = OrderProduct.objects.create(
+                    product_variations.append(variation_object)
+
+                order_product = OrderProduct.objects.create(
                         order=order,
                         user=user,
                         product=product,
@@ -141,20 +134,21 @@ def order_complete(request):
                         ordered = True,
 
                     )
-                    order_product.variations.add(variation_object)
-                    order_product.save()
+                if len(product_variations) > 0:
+                    order_product.variations.clear()
+                    for item in product_variations:
+                        order_product.variations.add(item)
+                order_product.save()
 
                 count +=1
-                print(quantity)
-            #variation = Variation.objects.filter()
-
-
+                #print(quantity)
 
 
         context ={
             'order_number': order_number,
         }
-        # Chuyển hướng đến trang xác nhận đơn hàng
+
+        cart_items.delete()
         return render(request,'orders/order_complete.html',context=context)
     else:
-        return render(request, 'your_template.html')
+        return render(request, '404.html')

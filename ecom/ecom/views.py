@@ -10,3 +10,5 @@ def home(request):
         'categories': categories
     }
     return render(request, 'home.html', context=context)
+
+

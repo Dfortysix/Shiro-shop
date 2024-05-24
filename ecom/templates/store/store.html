@@ -2,15 +2,14 @@
 {% load static %}
 {% load humanize %}
 {% block content %}
-<!-- ========================= SECTION PAGETOP ========================= -->
+
 <section class="section-pagetop bg">
 	<div class="container">
-		<h2 class="title-page">Our Store</h2>
+		<h2 class="text-4xl font-extrabold text-gray-800 mb-12">Our Store</h2>
 	</div>
 	<!-- container //  -->
 </section>
-<!-- ========================= SECTION INTRO END// ========================= -->
-<!-- ========================= SECTION CONTENT ========================= -->
+
 <section class="section-content padding-y">
 	<div class="container">
 		<div class="row">
@@ -136,7 +135,7 @@
 								<img src="{{ product.images.url }}" />
 							</div>
 							<figcaption class="info-wrap">
-								<div class="fix-height">
+								<div class="">
 									<a href="{{ product.get_url }}" class="title">{{ product.product_name }}</a>
 									<div class="price-wrap mt-2">
 										<span class="price">{{ product.price|intcomma }} VND</span>
@@ -215,5 +214,5 @@
 	</div>
 	<!-- container .//  -->
 </section>
-<!-- ========================= SECTION CONTENT END// ========================= -->
+
 {% endblock %}

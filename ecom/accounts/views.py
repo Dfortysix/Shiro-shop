@@ -13,6 +13,7 @@ from django.contrib.auth.tokens import default_token_generator
 from .forms import RegistrationForm
 from .models import Account
 from carts.views import _cart_id
+from orders.models import OrderProduct,Order
 
 import requests
 
@@ -142,7 +143,23 @@ def activate(request, uidb64, token):
 
 @login_required(login_url="login")
 def dashboard(request):
-    return render(request, "accounts/dashboard.html")
+    orders = Order.objects.all().filter(user=request.user)
+    orders ={
+        'orders':orders
+    }
+    return render(request, "accounts/dashboard.html",context=orders)
+
+
+@login_required
+def order_detail(request,order_number):
+    order = Order.objects.get(user=request.user,order_number=order_number)
+
+    order_products = OrderProduct.objects.all().filter(user=request.user,order=order)
+    context = {
+        'order': order,
+        'order_products': order_products,
+    }
+    return render(request,'accounts/order_detail.html',context=context)
 
 
 def forgotPassword(request):

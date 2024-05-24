@@ -33,9 +33,11 @@
   <img src="{% static 'images/banners/thankyou.webp' %}" class="w-full rounded-lg" />
   <div class="px-4 my-6 text-center">
     <h3 class="text-lg font-semibold">Đặt hàng thành công</h3>
-    <p class="mt-2 text-sm text-gray-400">Mã đơn hàng: {{ order_number }} </p>
-    <button type="button"
+    <a href="{% url 'order_detail' order_number %}"><p class="mt-2 text-sm text-gray-400">Mã đơn hàng: {{ order_number }} </p></a>
+    <a href="{% url 'order_detail' order_number %}">
+      <button type="button"
       class="px-6 py-2 w-full mt-4 rounded-lg text-white text-sm tracking-wider font-semibold border-none outline-none bg-blue-600 hover:bg-blue-700 active:bg-blue-600">View</button>
+    </a>
   </div>
 </div>
 

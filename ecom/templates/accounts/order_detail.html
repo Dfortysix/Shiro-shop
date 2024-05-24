@@ -7,31 +7,33 @@
         <thead class="bg-gray-800 whitespace-nowrap">
           <tr>
             <th class="p-4 text-left text-sm font-medium text-white">
-              Mã đơn
+              Hình ảnh
             </th>
             <th class="p-4 text-left text-sm font-medium text-white">
-              Địa chỉ
+              Sản phẩm
             </th>
             <th class="p-4 text-left text-sm font-medium text-white">
-              Số tiền
+              Số lượng
             </th>
             <th class="p-4 text-left text-sm font-medium text-white">
-              Ngày mua
+              Giá
             </th>
             <th class="p-4 text-left text-sm font-medium text-white">
-              Ghi chú
+              Trạng thái
             </th>
           </tr>
         </thead>
 
         <tbody class="whitespace-nowrap">
-        {% for order in orders %}
+        {% for order_product in order_products %}
           <tr class="even:bg-blue-50">
             <td class="p-4 text-sm text-black">
-             <a href="{% url 'order_detail' order.order_number %}"> {{ order.order_number }}</a>
+             <img src="{{ order_product.product.images.url }}" class="w-20 h-20 object-cover" >
             </td>
             <td class="p-4 text-sm text-black">
-              {{ order.address_line_1 }}
+              {{ order_product.product.product_name}} ({% for variation in order_product.variations.all %}
+  {{variation.variation_category|capfirst}}: {{ variation.variation_value|capfirst }}{% if not forloop.last %}, {% endif %}
+{% endfor %})
             </td>
             <td class="p-4 text-sm text-black">
               {{ order.order_total }}

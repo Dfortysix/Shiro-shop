@@ -47,6 +47,7 @@
           <h2 class="text-xl font-bold text-gray-800">Hoàn tất đơn hàng</h2>
           <form method="POST" class="mt-8" action="{% url 'order_complete' %}?grand_total={{ grand_total }}&tax={{ tax }}">
             {% csrf_token %}
+            {% include "includes/alerts.html" %}
             <div>
               <h3 class="text-base font-semibold text-gray-800 mb-4">Thông tin cá nhân</h3>
               <div class="grid md:grid-cols-2 gap-4">

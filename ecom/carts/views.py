@@ -12,7 +12,7 @@ def _cart_id(request):
         cart_id = request.session.create()
     return cart_id
 
-
+@login_required
 def cart(request, total=0, quantity=0, cart_items=None):
     try:
         if request.user.is_authenticated:
@@ -37,6 +37,7 @@ def cart(request, total=0, quantity=0, cart_items=None):
     }
     return render(request, 'store/cart.html', context=context)
 
+@login_required
 def add_cart(request, product_id):
     current_user = request.user
     product = Product.objects.get(id=product_id)    # Get object product
@@ -89,7 +90,7 @@ def add_cart(request, product_id):
         cart_item.save()
         return redirect('cart')
 
-
+@login_required
 def remove_cart(request, product_id, cart_item_id):
     product = get_object_or_404(Product, id=product_id)
     try:
@@ -115,7 +116,7 @@ def remove_cart(request, product_id, cart_item_id):
         pass
     return redirect('cart')
 
-
+@login_required
 def remove_cart_item(request, product_id, cart_item_id):
     product = get_object_or_404(Product, id=product_id)
     try:
