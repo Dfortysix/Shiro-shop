@@ -34,14 +34,14 @@ pipeline {
 
 
 
-    	stage('Test - Run Docker Container on Jenkins node') {
+    	stage('Test - Run Docker Container on Server Test') {
        	steps {
 
             	sh label: '', script: "docker run -d --name ${JOB_NAME} -p 7999:8000 ${img}"
       	}
     	}
 
-    	stage('Push To DockerHub') {
+    	stage('Push Image To DockerHub') {
         	steps {
             	script {
                 	docker.withRegistry( 'https://registry.hub.docker.com ', registryCredential ) {
@@ -52,14 +52,14 @@ pipeline {
     	}
 
 
-        stage('Deploy to Test Server') {
+        stage('Deploy to Server Production') {
             steps {
                 script {
                     def stopcontainer = "docker stop ${JOB_NAME}"
                     def delcontName = "docker rm ${JOB_NAME}"
                     def delimages = 'docker image prune -a --force'
                     def drun = "docker run -d --name ${JOB_NAME} -p 80:8000 ${img}"
-                    def add_pub_ss = "13.229.226.52"
+                    def add_pub_ss = "13.250.6.249"
                     println "${drun}"
                     sshagent(['staging-key']) {
                         sh returnStatus: true, script: "ssh -o StrictHostKeyChecking=no ubuntu@${add_pub_ss} ${stopcontainer} "
